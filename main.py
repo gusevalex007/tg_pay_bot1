@@ -6,7 +6,8 @@
 
 import logging
 
-from telegram import LabeledPrice, ShippingOption, Update
+from telegram import LabeledPrice, ShippingOption, Update, InlineKeyboardButton, InlineKeyboardMarkup
+
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -36,23 +37,35 @@ async def start_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         "invoice without shipping."
     )
 
+    keyboard = [
+        [
+            InlineKeyboardButton("R22", callback_data="/shipping"),
+            InlineKeyboardButton("Gucci", callback_data="/noshipping"),
+        ],
+        [InlineKeyboardButton("Option 3", callback_data="3")],
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    # await update.message.reply_text("Please choose:", reply_markup=reply_markup)
+
     await update.message.reply_text(msg)
 
 
 async def start_with_shipping_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends an invoice with shipping-payment."""
     chat_id = update.message.chat_id
-    title = "Payment Example"
-    description = "Payment Example using python-telegram-bot"
+    title = "Проект Hedonism"
+    description = "Диски R22 для RS5 Мурлыси"
     # select a payload just for you to recognize its the donation from your bot
     payload = "Custom-Payload"
     # In order to get a provider_token see https://core.telegram.org/bots/payments#getting-a-token
-    currency = "USD"
+    currency = "RUB"
     # price in dollars
-    price = 1
+    price = 56900
     # price * 100 so as to include 2 decimal points
     # check https://core.telegram.org/bots/payments#supported-currencies for more details
-    prices = [LabeledPrice("Test", price * 100)]
+    prices = [LabeledPrice("Audi R22 Original", price * 100)]
 
     # optionally pass need_name=True, need_phone_number=True,
     # need_email=True, need_shipping_address=True, is_flexible=True
@@ -61,7 +74,7 @@ async def start_with_shipping_callback(update: Update, context: ContextTypes.DEF
         title,
         description,
         payload,
-        PAYMENT_PROVIDER_TOKEN,
+        "381764678:TEST:82186",
         currency,
         prices,
         need_name=True,
@@ -77,21 +90,21 @@ async def start_without_shipping_callback(
 ) -> None:
     """Sends an invoice without shipping-payment."""
     chat_id = update.message.chat_id
-    title = "Payment Example"
-    description = "Payment Example using python-telegram-bot"
+    title = ("Проект миллиард")
+    description = "Gucci для Мурлыси"
     # select a payload just for you to recognize its the donation from your bot
     payload = "Custom-Payload"
     # In order to get a provider_token see https://core.telegram.org/bots/payments#getting-a-token
-    currency = "USD"
+    currency = "RUB"
     # price in dollars
-    price = 1
+    price = 32080
     # price * 100 so as to include 2 decimal points
-    prices = [LabeledPrice("Test", price * 100)]
+    prices = [LabeledPrice("Gucci bag", price * 100)]
 
     # optionally pass need_name=True, need_phone_number=True,
     # need_email=True, need_shipping_address=True, is_flexible=True
     await context.bot.send_invoice(
-        chat_id, title, description, payload, PAYMENT_PROVIDER_TOKEN, currency, prices
+        chat_id, title, description, payload, "381764678:TEST:82186", currency, prices
     )
 
 
@@ -134,7 +147,7 @@ async def successful_payment_callback(update: Update, context: ContextTypes.DEFA
 def main() -> None:
     """Run the bot."""
     # Create the Application and pass it your bot's token.
-    application = Application.builder().token("TOKEN").build()
+    application = Application.builder().token("6972059164:AAFQYLax2XfQwS9pJH_M5896E84KnjMIOkw").build()
 
     # simple start function
     application.add_handler(CommandHandler("start", start_callback))
