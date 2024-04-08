@@ -6,8 +6,13 @@
 <body>
 
 <form>
-    <input type="file" accept="image/*" capture="camera">
+    <input type="file" accept="image/*" capture="camera" id="files">
     <input type="submit" value="Upload">
+    <img id="image" />
+    <script>document.getElementById('files').onchange = function () {
+  var src = URL.createObjectURL(this.files[0])
+  document.getElementById('image').src = src}
+    </script>
 </form>
 
 </body>
