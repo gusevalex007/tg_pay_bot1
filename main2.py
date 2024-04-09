@@ -16,6 +16,7 @@ from telegram.ext import (
     PreCheckoutQueryHandler,
     ShippingQueryHandler,
     filters,
+    CallbackQueryHandler
 )
 
 # Enable logging
@@ -47,10 +48,21 @@ async def start_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    #await update.message.reply_text("Please choose:", reply_markup=reply_markup)
+    await update.message.reply_text("Пожалуйста выберите нужную опцию:", reply_markup=reply_markup)
 
     await update.message.reply_text(msg)
 
+
+async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Parses the CallbackQuery and updates the message text."""
+    query = update.callback_query
+
+    # CallbackQueries need to be answered, even if no notification to the user is needed
+    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
+    await query.answer()
+
+    # await query.edit_message_text(text=f"Selected option: {query.data}")
+    await query.edit_message_text(text=query.data)
 
 async def start_with_shipping_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends an invoice with shipping-payment."""
@@ -91,7 +103,7 @@ async def start_without_shipping_callback(
     """Sends an invoice without shipping-payment."""
     chat_id = update.message.chat_id
     title = ("Проект миллиард")
-    description = "Gucci для"
+    description = "Gucci"
     # select a payload just for you to recognize its the donation from your bot
     payload = "Custom-Payload"
     # In order to get a provider_token see https://core.telegram.org/bots/payments#getting-a-token
@@ -155,6 +167,9 @@ def main() -> None:
     # Add command handler to start the payment invoice
     application.add_handler(CommandHandler("shipping", start_with_shipping_callback))
     application.add_handler(CommandHandler("noshipping", start_without_shipping_callback))
+
+    application.add_handler(CallbackQueryHandler(button))
+    # application.add_handler(CommandHandler("help", help_command))
 
     # Optional handler if your product requires shipping
     application.add_handler(ShippingQueryHandler(shipping_callback))
