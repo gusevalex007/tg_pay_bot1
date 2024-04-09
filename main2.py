@@ -6,7 +6,8 @@
 
 import logging
 
-from telegram import LabeledPrice, ShippingOption, Update, InlineKeyboardButton, InlineKeyboardMarkup
+import telegram
+from telegram import LabeledPrice, ShippingOption, Update, InlineKeyboardButton, InlineKeyboardMarkup,ReplyKeyboardMarkup
 
 from telegram.ext import (
     Application,
@@ -52,6 +53,8 @@ async def start_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     await update.message.reply_text(msg)
 
+    await update.message.reply_text("🤦")
+
 
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Parses the CallbackQuery and updates the message text."""
@@ -63,6 +66,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     # await query.edit_message_text(text=f"Selected option: {query.data}")
     await query.edit_message_text(text=query.data)
+
 
 async def start_with_shipping_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends an invoice with shipping-payment."""
@@ -184,6 +188,8 @@ def main() -> None:
 
     # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)
+
+
 
 
 if __name__ == "__main__":
